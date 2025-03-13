@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Server Console</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2980b9;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #9b59b6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .service-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .service-card:hover:before {
+            width: 10px;
+        }
+        
+        .card-jf:before { background-color: var(--primary); }
+        .card-nginx:before { background-color: var(--success); }
+        .card-mc:before { background-color: var(--warning); }
+        .card-ag:before { background-color: var(--danger); }
+        .card-pm:before { background-color: var(--info); }
+        
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .service-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+        
+        .service-link {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .service-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-jf .service-link:hover { background-color: var(--primary); }
+        .card-nginx .service-link:hover { background-color: var(--success); }
+        .card-mc .service-link:hover { background-color: var(--warning); color: #2c3e50; }
+        .card-ag .service-link:hover { background-color: var(--danger); }
+        .card-pm .service-link:hover { background-color: var(--info); }
+        
+        .status-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--success);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+        
+        .clock {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Dark mode toggle */
+        .theme-switch {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-card {
+                min-height: 150px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Home Server Console</h1>
+        <p class="subtitle">Access your local services securely</p>
+        <div class="clock" id="clock"></div>
+        <button class="theme-switch" id="themeSwitch">🌙</button>
+    </header>
+    
+    <main>
+        <div class="service-grid">
+            <!-- Jellyfin -->
+            <div class="service-card card-jf" onclick="window.location.href='http://jf.url.lol'">
+                <div class="status-indicator"></div>
+                <div class="service-icon">🎬</div>
+                <h2 class="service-title">Jellyfin</h2>
+                <p class="service-description">Media server for your videos, music, and photos</p>
+                <a href="http://jf.url.lol" class="service-link">Access</a>
+            </div>
+            
+            <!-- Nginx -->
+            <div class="service-card card-nginx" onclick="window.location.href='http://nginx.url.lol'">
+                <div class="status-indicator"></div>
+                <div class="service-icon">🔄</div>
+                <h2 class="service-title">Nginx</h2>
+                <p class="service-description">Web server and reverse proxy manager</p>
+                <a href="http://nginx.url.lol" class="service-link">Access</a>
+            </div>
+            
+            <!-- Minecraft -->
+            <div class="service-card card-mc" onclick="window.location.href='http://mc.url.lol'">
+                <div class="status-indicator"></div>
+                <div class="service-icon">🎮</div>
+                <h2 class="service-title">Minecraft</h2>
+                <p class="service-description">Minecraft server management panel</p>
+                <a href="http://mc.url.lol" class="service-link">Access</a>
+            </div>
+            
+            <!-- Adguard -->
+            <div class="service-card card-ag" onclick="window.location.href='http://ag.url.lol'">
+                <div class="status-indicator"></div>
+                <div class="service-icon">🛡️</div>
+                <h2 class="service-title">AdGuard</h2>
+                <p class="service-description">Network-wide ad and tracker blocking</p>
+                <a href="http://ag.url.lol" class="service-link">Access</a>
+            </div>
+            
+            <!-- Portainer -->
+            <div class="service-card card-pm" onclick="window.location.href='http://pm.url.lol'">
+                <div class="status-indicator"></div>
+                <div class="service-icon">📦</div>
+                <h2 class="service-title">Portainer</h2>
+                <p class="service-description">Container management interface</p>
+                <a href="http://pm.url.lol" class="service-link">Access</a>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Home Server Console &copy; 2025</p>
+    </footer>
+
+    <script>
+        // Update clock
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = timeString;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock();
+        
+        // Theme switch
+        const themeSwitch = document.getElementById('themeSwitch');
+        let darkMode = true;
+        
+        themeSwitch.addEventListener('click', () => {
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.body.style.backgroundColor = 'var(--dark)';
+                document.body.style.color = 'var(--light)';
+                themeSwitch.textContent = '🌙';
+            } else {
+                document.body.style.backgroundColor = 'var(--light)';
+                document.body.style.color = 'var(--dark)';
+                themeSwitch.textContent = '☀️';
+            }
+        });
+        
+        // Check service status (mock)
+        function checkStatuses() {
+            const indicators = document.querySelectorAll('.status-indicator');
+            indicators.forEach(indicator => {
+                // This is just a mock - in a real environment you'd 
+                // make fetch requests to check if services are up
+                const status = Math.random() > 0.2 ? 'up' : 'down';
+                indicator.style.backgroundColor = status === 'up' ? 'var(--success)' : 'var(--danger)';
+            });
+        }
+        
+        // Initial check
+        checkStatuses();
+        
+        // Check every 30 seconds
+        setInterval(checkStatuses, 30000);
+    </script>
+</body>
+</html>
